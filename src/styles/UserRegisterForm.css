@@ -1,0 +1,74 @@
+input {
+  height: 30px; /* Aumenta a altura */
+  font-size: 16px;
+}
+
+.user-register-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fdfdfd;
+  font-family: Arial, sans-serif;
+}
+
+.user-register-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-register-group {
+  margin-bottom: 15px;
+}
+
+.user-register-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: left;
+}
+
+.user-register-input {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.user-register-button {
+  padding: 12px;
+  background-color: #007BFF;
+  color: #fff;  
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-register-button:hover {
+  background-color: #0056b3;
+}
+
+.user-register-message {
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+h2 {
+    color: black;
+}
+
+label {
+    color: black;
+}
