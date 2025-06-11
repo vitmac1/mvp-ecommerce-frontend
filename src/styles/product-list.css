@@ -1,0 +1,136 @@
+.product-list-container {
+    max-width: 1900px;
+    width: 90%; /* responsivo */
+    min-height: 1200px; /* mais alto */
+    padding: 50px 30px; /* mais espaçamento interno */
+    background: #2c2c44; /* um azul escuro para destacar */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #eee;
+}
+
+.product-list-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #f0f0f0;
+    text-align: center;
+}
+
+.product-list-message {
+    font-size: 1.2rem;
+    color: #bbb;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.product-list-message.error {
+    color: #f56565; /* vermelho suave para erro */
+}
+
+.product-list-message.sucess {
+    color: #00ae46; /* vermelho suave para erro */
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+.product-table thead,
+.product-table tbody {
+    display: block;
+}
+
+.product-table thead tr {
+    background-color: #4e5d94; /* azul mais claro */
+    color: white;
+    text-align: left;
+    font-weight: 600;
+    border-radius: 8px;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.product-table tbody {
+    max-height: 400px; /* altura máxima da área de dados - ajusta conforme quiser */
+    overflow-y: auto;
+    width: 100%;
+}
+
+.product-table th,
+.product-table td {
+    padding: 12px 15px;
+}
+
+.product-table tbody tr {
+    background: #38395c;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
+    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    color: #ddd;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.product-table tbody tr:hover {
+    background-color: #505583;
+}
+
+.product-table img {
+    border-radius: 6px;
+    display: block;
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+}
+
+.product-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+}
+
+.product-table input[type="number"] {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2a2a3d;
+    color: #fff;
+}
+.product-table button {
+    padding: 6px 12px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.product-table button:hover {
+    background-color: #45a049;
+}
+
+.cart-counter {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    width: 80px;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* .cart-items-list-modal-ul {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 15px;
+} */

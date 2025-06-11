@@ -1,0 +1,85 @@
+/* Centraliza o conteúdo na tela */
+.page-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1e1e2f; /* pode ajustar conforme seu app */
+    padding: 16px; /* espaço lateral para mobile */
+    box-sizing: border-box;
+}
+
+/* Container do formulário */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    padding: 32px;
+    background-color: #1e1e2f;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    color: white;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Cabeçalho do formulário */
+.form-container h2 {
+    margin: 0;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* Rótulos e inputs */
+.form-container label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.form-container input,
+.form-container textarea {
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background-color: #2e2e42;
+    color: white;
+    font-size: 14px;
+    resize: vertical;
+    width: 92%;
+    resize: none;
+}
+
+.form-container button {
+    align-self: center; /* agora funciona porque o form é flex */
+    margin-top: 20px;
+    padding: 12px 24px;
+    width: 100%;
+    max-width: 240px;
+    /* opcional para não ficar largo demais */
+    background-color: #4a90e2;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* espaço entre os elementos do form */
+}
+
+.form-container button:hover {
+    background-color: #3a7dd3;
+}
+
+.form-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

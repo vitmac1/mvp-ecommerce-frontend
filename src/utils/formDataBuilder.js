@@ -1,13 +1,13 @@
 export function buildFormData(data, fileFieldName, file) {
-  const formData = new FormData();
-  
-  for (const key in data) {
-    formData.append(key, data[key]);
-  }
+    const formData = new FormData();
 
-  if (file) {
-    formData.append(fileFieldName, file);
-  }
+    for (const key in data) {
+        formData.append(key, data[key]);
+    }
 
-  return formData;
+    if (file) {
+        formData.append(fileFieldName, file);
+    }
+
+    return formData;
 }

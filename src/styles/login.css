@@ -1,0 +1,15 @@
+/* Upload personalizado */
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-upload-wrapper input[type="file"] {
+    display: none;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #ccc;
+}
