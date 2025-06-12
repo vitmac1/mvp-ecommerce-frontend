@@ -43,9 +43,7 @@ cd seu-projeto-frontend
 
 2. Instale as dependências:
 
-npm install
-
-# ou yarn install
+npm install ou yarn install
 
 3.Configure a URL base da API do backend no .ENV:
 
@@ -53,9 +51,7 @@ VITE_API_URL=http://localhost:3000
 
 4.Inicie a aplicação:
 
-npm start
-
-# ou yarn start
+npm start ou yarn start
 
 Estrutura de Pastas
 
