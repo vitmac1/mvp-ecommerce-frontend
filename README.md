@@ -37,15 +37,15 @@ Aplicação frontend em React para gerenciamento de produtos, carrinho, checkout
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/seu-projeto-frontend.git
-cd seu-projeto-frontend
+git clone https://github.com/vitmac1/mvp-ecommerce-frontend.git
+cd mvp-ecommerce-frontend
 ```
 
 2. Instale as dependências:
 
 npm install ou yarn install
 
-3.Configure a URL base da API do backend no .ENV:
+3. Configure a URL base da API do backend no .ENV:
 
 VITE_API_URL=http://localhost:3000
 
