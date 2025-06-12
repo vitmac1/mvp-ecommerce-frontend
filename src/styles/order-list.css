@@ -1,0 +1,50 @@
+.order-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.order-wrapper {
+    width: 100%;
+    max-width: 1900px;
+    background-color: #222222;
+    padding: 20px;
+    max-height: 1200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.order-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.order-message {
+    text-align: center;
+    color: #ccc;
+}
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-table thead {
+    background-color: #333;
+}
+
+.order-table th {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #555;
+    color: #eee;
+}
+
+.order-table td {
+    padding: 12px;
+    border-bottom: 1px solid #555;
+    color: #ddd;
+}

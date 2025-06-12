@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 import { FormLayout } from "../utils/FormLayout";
 import "../styles/login.css";
+import { AuthContext } from "../middleware/AuthContext";
 
 const Login = () => {
     const [form, setForm] = useState({ email: "", password: "" });
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -19,11 +21,14 @@ const Login = () => {
         setMessage("");
 
         try {
-            const response = await api.post("/user/login", form);
+            const response = await api.post("/user/login", form),
+                { token, admin } = response.data;
 
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token);
+            if (token) {
+                localStorage.setItem("token", token);
                 localStorage.setItem("cartCount", 0);
+
+                login(admin);
 
                 navigate("/product/productList");
             } else {

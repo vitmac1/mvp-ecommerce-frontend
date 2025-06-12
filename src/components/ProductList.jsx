@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../services/api";
 import "../styles/product-list.css";
 import "../styles/form-layout.css";
 import Modal from "react-modal";
+import CheckoutForm from "./CheckoutForm";
 
 Modal.setAppElement("#root");
 
@@ -12,20 +13,26 @@ const ProductList = () => {
     const [loading, setLoading] = useState(true);
     const [quantities, setQuantities] = useState({});
     const [cartCount, setCartCount] = useState(() => {
-        // Tenta recuperar do localStorage ao iniciar
         const saved = localStorage.getItem("cartCount");
         return saved ? parseInt(saved, 10) : 0;
     });
     const [cartItems, setCartItems] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const total = cartItems.reduce((acc, item) => {
         const price = item.Product?.price || 0;
         return acc + item.quantity * price;
     }, 0);
-
-    const url = "http://localhost:3000/uploads";
+    const [query, setQuery] = useState("");
 
     useEffect(() => {
+        const handleCartCountChanged = (e) => {
+            setCartCount(e.detail);
+            localStorage.setItem("cartCount", 0);
+        };
+
+        window.addEventListener("cartCountChanged", handleCartCountChanged);
+
         const fetchProducts = async () => {
             try {
                 const response = await api.get("/product/getAllProducts", {
@@ -33,6 +40,7 @@ const ProductList = () => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+
                 setProducts(response.data || []);
             } catch (err) {
                 console.error("Erro ao buscar produtos:", err);
@@ -43,13 +51,28 @@ const ProductList = () => {
         };
 
         fetchProducts();
+
+        return () => {
+            window.removeEventListener(
+                "cartCountChanged",
+                handleCartCountChanged
+            );
+        };
     }, []);
+
+    const filteredProducts = products.filter((prod) => {
+        return (
+            prod.id.toString().includes(query.toLowerCase()) ||
+            (prod.name?.toLowerCase().includes(query.toLowerCase()) ?? false) ||
+            (prod.category?.toLowerCase().includes(query.toLowerCase()) ??
+                false)
+        );
+    });
 
     const handleAddToCart = async (productId) => {
         const quantity = quantities[productId] || 1;
 
         try {
-            // Exemplo: enviar o id do produto para o backend adicionar ao carrinho
             const response = await api.post("/cart/addToCart", {
                 productId,
                 quantity,
@@ -87,7 +110,7 @@ const ProductList = () => {
         try {
             const response = await api.get("/cart/getCartByUserId");
             setCartItems(response.data || []);
-            setIsModalOpen(true); // abre o modal após buscar os itens
+            setIsModalOpen(true);
         } catch (error) {
             console.error("Erro ao buscar itens do carrinho", error);
             setMessage("Erro ao buscar itens do carrinho");
@@ -114,6 +137,19 @@ const ProductList = () => {
             <div className="product-list-container">
                 <h2 className="product-list-title">Lista de Produtos</h2>
 
+                {/* Barra de busca */}
+                <input
+                    type="text"
+                    placeholder="Buscar por id, nome, descrição ou categoria..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    style={{
+                        padding: "8px",
+                        marginBottom: "20px",
+                        width: "100%",
+                    }}
+                />
+
                 {loading && (
                     <p className="product-list-message">
                         Carregando produtos...
@@ -124,13 +160,13 @@ const ProductList = () => {
                     <p className="product-list-message sucess">{message}</p>
                 )}
 
-                {!loading && products.length === 0 && !message && (
+                {!loading && filteredProducts.length === 0 && !message && (
                     <p className="product-list-message">
                         Nenhum produto cadastrado.
                     </p>
                 )}
 
-                {!loading && products.length > 0 && (
+                {!loading && filteredProducts.length > 0 && (
                     <table className="product-table">
                         <thead>
                             <tr>
@@ -143,12 +179,12 @@ const ProductList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {products.map((prod) => (
+                            {filteredProducts.map((prod) => (
                                 <tr key={prod.id}>
                                     <td>
                                         {prod.image && (
                                             <img
-                                                src={`${url}/${prod.image}`}
+                                                src={`http://localhost:3000/uploads/${prod.image}`}
                                                 alt={prod.name || prod.nome}
                                             />
                                         )}
@@ -201,27 +237,8 @@ const ProductList = () => {
                     isOpen={isModalOpen}
                     onRequestClose={() => setIsModalOpen(false)}
                     contentLabel="Itens do Carrinho"
-                    style={{
-                        content: {
-                            top: "50%",
-                            left: "50%",
-                            right: "auto",
-                            bottom: "auto",
-                            marginRight: "-50%",
-                            transform: "translate(-50%, -50%)",
-                            padding: "20px",
-                            maxWidth: "600px",
-                            width: "90%",
-                            backgroundColor: "#fff",
-                            color: "#000",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                        },
-                        overlay: {
-                            backgroundColor: "rgba(0, 0, 0, 0.5)",
-                            zIndex: 1000,
-                        },
-                    }}
+                    className="modal-content"
+                    overlayClassName="modal-overlay"
                 >
                     <h2>Itens no Carrinho</h2>
                     {cartItems.length === 0 ? (
@@ -234,188 +251,76 @@ const ProductList = () => {
                                     overflowY: "auto",
                                 }}
                             >
-                                <table
-                                    style={{
-                                        width: "100%",
-                                        borderCollapse: "collapse",
-                                    }}
-                                >
+                                <table className="cart-table">
                                     <thead>
                                         <tr>
-                                            <th
-                                                style={{
-                                                    padding: "8px",
-                                                    textAlign: "left",
-                                                    width: "80px",
-                                                }}
-                                            >
-                                                Imagem
-                                            </th>
-                                            <th
-                                                style={{
-                                                    padding: "8px",
-                                                    textAlign: "left",
-                                                }}
-                                            >
-                                                Produto
-                                            </th>
-                                            <th
-                                                style={{
-                                                    padding: "8px",
-                                                    textAlign: "center",
-                                                    width: "100px",
-                                                }}
-                                            >
-                                                Quantidade
-                                            </th>
-                                            <th
-                                                style={{
-                                                    padding: "8px",
-                                                    textAlign: "right",
-                                                    width: "100px",
-                                                }}
-                                            >
-                                                Preço Unitário
-                                            </th>
-                                            <th
-                                                style={{
-                                                    padding: "8px",
-                                                    textAlign: "right",
-                                                    width: "100px",
-                                                }}
-                                            >
-                                                Total
-                                            </th>
+                                            <th>Imagem</th>
+                                            <th>Nome</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço Unitário</th>
+                                            <th>Subtotal</th>
+                                            <th>Remover</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {cartItems.map((item) => {
-                                            const preco =
-                                                item.Product?.price || 0;
-                                            const total = preco * item.quantity;
-
-                                            return (
-                                                <tr
-                                                    key={item.id}
-                                                    style={{
-                                                        borderBottom:
-                                                            "1px solid #ccc",
-                                                        verticalAlign: "middle",
-                                                    }}
-                                                >
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            textAlign: "center",
-                                                        }}
-                                                    >
-                                                        {item.Product
-                                                            ?.image && (
-                                                            <img
-                                                                src={`http://localhost:3000/uploads/${item.Product.image}`}
-                                                                alt={
-                                                                    item.Product
-                                                                        .name ||
-                                                                    item.Product
-                                                                        .nome
-                                                                }
-                                                                style={{
-                                                                    width: "70px",
-                                                                    height: "70px",
-                                                                    objectFit:
-                                                                        "contain",
-                                                                    borderRadius:
-                                                                        "6px",
-                                                                    backgroundColor:
-                                                                        "#fff",
-                                                                    margin: "0 auto",
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            verticalAlign:
-                                                                "middle",
-                                                        }}
-                                                    >
-                                                        {item.Product?.name ||
-                                                            item.Product?.nome}
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            textAlign: "center",
-                                                            verticalAlign:
-                                                                "middle",
-                                                        }}
-                                                    >
-                                                        {item.quantity}
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            textAlign: "right",
-                                                            verticalAlign:
-                                                                "middle",
-                                                        }}
-                                                    >
-                                                        {preco.toLocaleString(
-                                                            "pt-BR",
-                                                            {
-                                                                style: "currency",
-                                                                currency: "BRL",
+                                        {cartItems.map((item) => (
+                                            <tr
+                                                key={item.id}
+                                                style={{
+                                                    borderBottom:
+                                                        "1px solid #ccc",
+                                                }}
+                                            >
+                                                <td>
+                                                    {item.Product?.image && (
+                                                        <img
+                                                            src={`http://localhost:3000/uploads/${item.Product.image}`}
+                                                            alt={
+                                                                item.Product
+                                                                    .name ||
+                                                                item.Product
+                                                                    .nome
                                                             }
-                                                        )}
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            textAlign: "right",
-                                                            verticalAlign:
-                                                                "middle",
-                                                        }}
+                                                        />
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {item.Product?.name ||
+                                                        item.Product?.nome}
+                                                </td>
+                                                <td>{item.quantity}</td>
+                                                <td>
+                                                    {(
+                                                        item.Product?.price || 0
+                                                    ).toLocaleString("pt-BR", {
+                                                        style: "currency",
+                                                        currency: "BRL",
+                                                    })}
+                                                </td>
+                                                <td>
+                                                    {(
+                                                        (item.Product?.price ||
+                                                            0) *
+                                                        (item.quantity || 0)
+                                                    ).toLocaleString("pt-BR", {
+                                                        style: "currency",
+                                                        currency: "BRL",
+                                                    })}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        className="remove-btn"
+                                                        onClick={() =>
+                                                            handleRemoveItem(
+                                                                item.Product?.id
+                                                            )
+                                                        }
                                                     >
-                                                        {total.toLocaleString(
-                                                            "pt-BR",
-                                                            {
-                                                                style: "currency",
-                                                                currency: "BRL",
-                                                            }
-                                                        )}
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "8px",
-                                                            textAlign: "center",
-                                                        }}
-                                                    >
-                                                        <button
-                                                            onClick={() =>
-                                                                handleRemoveItem(
-                                                                    item.Product
-                                                                        ?.id
-                                                                )
-                                                            }
-                                                            style={{
-                                                                backgroundColor:
-                                                                    "#ff4d4f",
-                                                                color: "#fff",
-                                                                border: "none",
-                                                                borderRadius:
-                                                                    "4px",
-                                                                padding:
-                                                                    "4px 8px",
-                                                                cursor: "pointer",
-                                                            }}
-                                                        >
-                                                            ✕
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                                        ✕
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -429,27 +334,37 @@ const ProductList = () => {
                             fontSize: "16px",
                         }}
                     >
-                        Total: R${" "}
+                        Total:{" "}
                         {total.toLocaleString("pt-BR", {
                             style: "currency",
                             currency: "BRL",
                         })}
                     </div>
-                    <button onClick={() => setIsModalOpen(false)}>
-                        Fechar
-                    </button>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginTop: "20px",
-                        }}
-                    >
-                        <button onClick={() => setIsModalOpen(false)}>
+                    <div className="modal-actions">
+                        <button
+                            className="modal-close-btn"
+                            onClick={() => setIsModalOpen(false)}
+                        >
                             Fechar
+                        </button>
+                        <button
+                            className="modal-checkout-btn"
+                            onClick={() => {
+                                setIsModalOpen(false);
+                                setIsCheckoutOpen(true);
+                            }}
+                        >
+                            Finalizar Pedido
                         </button>
                     </div>
                 </Modal>
+
+                {isCheckoutOpen && (
+                    <CheckoutForm
+                        total={total}
+                        onClose={() => setIsCheckoutOpen(false)}
+                    />
+                )}
             </div>
         </div>
     );
