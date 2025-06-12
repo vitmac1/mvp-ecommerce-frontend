@@ -1,4 +1,4 @@
-# Nome do Projeto
+# mvp_ecommerce-frontend
 
 mvp_ecommerce-frontend
 
